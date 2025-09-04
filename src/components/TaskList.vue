@@ -3,14 +3,14 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Lista de Tarefas</h2>
       <div class="d-flex gap-3">
-        <TaskFilters
+        <TaskFilter
           filter-id="statusFilter"
           :initial-value="selectedStatus"
           :labels="statusLabels"
           default-label="Todos os Status"
           @update:value="setStatus"
         />
-        <TaskFilters
+        <TaskFilter
           filter-id="priorityFilter"
           :initial-value="selectedPriority"
           :labels="priorityLabels"
@@ -50,17 +50,27 @@
         </tr>
       </tbody>
     </table>
+    <TaskPagination
+      v-if="totalPages > 0"
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      :prev-page-url="prevPageUrl"
+      :next-page-url="nextPageUrl"
+      @page-change="goToPage"
+    />
   </div>
 </template>
 
 <script>
 import api from '@/services/api';
-import TaskFilters from '@/components/TaskFilter.vue';
+import TaskFilter from '@/components/TaskFilter.vue';
+import TaskPagination from '@/components/TaskPagination.vue';
 
 export default {
   name: 'TaskList',
   components: {
-    TaskFilters,
+    TaskFilter,
+    TaskPagination,
   },
   data() {
     return {
@@ -89,6 +99,12 @@ export default {
         medium: 'Média',
         high: 'Alta',
       },
+      currentPage: 1,
+      totalPages: 1,
+      perPage: 15,
+      total: 0,
+      nextPageUrl: null,
+      prevPageUrl: null,
     };
   },
   computed: {
@@ -107,17 +123,23 @@ export default {
     this.fetchTasks();
   },
   methods: {
-    async fetchTasks() {
+    async fetchTasks(page = 1) {
       this.loading = true;
       this.error = null;
       try {
-        const { data } = await api.get('/tasks');
+        const { data } = await api.get(`/tasks?page=${page}`);
 
         if (!Array.isArray(data.data)) {
           throw new Error('Resposta inválida: dados não são uma lista.');
         }
 
         this.tasks = data.data;
+        this.currentPage = data.current_page;
+        this.totalPages = data.last_page;
+        this.perPage = data.per_page;
+        this.total = data.total;
+        this.nextPageUrl = data.next_page_url;
+        this.prevPageUrl = data.prev_page_url;
       } catch (e) {
         this.error = e?.response?.data?.message || 'Erro ao carregar tarefas.';
       } finally {
@@ -129,6 +151,9 @@ export default {
     },
     setPriority(priority) {
       this.selectedPriority = priority;
+    },
+    goToPage(page) {
+      this.fetchTasks(page);
     },
   },
   filters: {
