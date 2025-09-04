@@ -1,24 +1,47 @@
-# app
+<h1 align="center">
+Projeto TO-DO List (Smart Leader)
+</h1>
 
-## Project setup
-```
-npm install
+## Sobre
+Aplicação completa para gerenciamento de tarefas (to-do list)
+
+## Tecnologias utilizadas
+- Javascript
+- Vue 2
+- Axios
+- js-cookie
+- Bootstrap 5
+
+# Rodando projeto
+## Pré-requisitos
+- Git
+- Docker
+
+## Portas necessárias
+- Porta 8080
+
+## Passo a Passo de para executar projeto
+- 1- Clonar
+```URL
+https://github.com/nepogabriel/vue-smart-leader.git
 ```
 
-### Compiles and hot-reloads for development
+- 2- Entrar na pasta
 ```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
+cd vue-smart-leader
 ```
 
-### Lints and fixes files
+- 3- Variáveis de ambiente
 ```
-npm run lint
+cp .env.example .env
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- 4- Executar container Docker
+```
+docker composer up -d
+```
+
+- 5- Links de acesso
+```URL
+http://localhost:8787/
+```
