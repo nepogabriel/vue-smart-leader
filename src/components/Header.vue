@@ -2,7 +2,7 @@
   <header class="bg-dark text-white p-3">
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#"><i class="fa fa-home fa-2x text-success"></i> Smart Leader</a>
+        <a class="navbar-brand d-flex align-items-center" href="#"><i class="fa fa-home fa-2x text-success"></i>&nbsp;Smart Leader</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>

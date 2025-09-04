@@ -62,6 +62,7 @@
             <td>{{ task.due_date | formatDate }}</td>
             <td>
               <button class="btn btn-sm btn-success" @click="openEditForm(task)"><i class="fa fa-pencil-square-o"></i></button>
+              <button class="btn btn-sm btn-danger" @click="openDeleteModal(task)"><i class="fa fa-trash-o"></i></button>
             </td>
           </tr>
         </tbody>
@@ -74,6 +75,13 @@
         @page-change="goToPage"
       />
     </div>
+
+    <DeleteModal
+      :show="showDeleteModal"
+      :task="taskToDelete"
+      @close="closeDeleteModal"
+      @confirm="deleteTask"
+    />
   </div>
 </template>
 
@@ -82,6 +90,7 @@ import api from '@/services/api';
 import TaskFilter from '@/components/TaskFilter.vue';
 import TaskPagination from '@/components/TaskPagination.vue';
 import TaskForm from '@/components/TaskForm.vue';
+import DeleteModal from '@/components/DeleteModal.vue';
 
 export default {
   name: 'TaskList',
@@ -89,6 +98,7 @@ export default {
     TaskFilter,
     TaskPagination,
     TaskForm,
+    DeleteModal,
   },
   data() {
     return {
@@ -132,6 +142,8 @@ export default {
         priority: '',
         due_date: '',
       },
+      showDeleteModal: false,
+      taskToDelete: null,
     };
   },
   computed: {
@@ -216,6 +228,30 @@ export default {
     handleFormError(message) {
       this.error = message;
     },
+    openDeleteModal(task) {
+      this.taskToDelete = task;
+      this.showDeleteModal = true;
+    },
+    closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.taskToDelete = null;
+    },
+    async deleteTask() {
+      if (!this.taskToDelete?.id) return;
+
+      this.loading = true;
+      this.error = null;
+      try {
+        await api.delete(`/tasks/${this.taskToDelete.id}`);
+        this.closeDeleteModal();
+        this.fetchTasks(this.currentPage);
+      } catch (e) {
+        this.error = e?.response?.data?.message || 'Erro ao excluir tarefa.';
+        console.error('Erro na exclusão:', e);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
   filters: {
     formatStatus(status) {
@@ -246,5 +282,8 @@ export default {
 <style scoped>
 .gap-3 {
   gap: 1rem;
+}
+.me-2 {
+  margin-right: 0.5rem;
 }
 </style>
