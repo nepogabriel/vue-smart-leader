@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import api from "@/services/api";
+
 export default {
   name: 'Login',
   data: () => ({
@@ -29,17 +31,21 @@ export default {
   }),
   methods: {
     async submit() {
-      this.error = null;
-      this.loading = true;
       try {
-        await this.$store.dispatch('auth/login', {
+        const { data } = await api.post("/login", {
           email: this.email,
           password: this.password,
         });
 
+        // salva o token no Vuex
+        this.$store.commit("auth/SET_TOKEN", data.data.access_token);
+
+        // redireciona para dashboard
         this.$router.push({ name: "dashboard" }).catch(() => {});
       } catch (e) {
-        this.error = e?.response?.data?.message || 'Não foi possível fazer login.';
+        console.error("Erro no login:", e);
+        this.error =
+          e?.response?.data?.message || "Não foi possível fazer login.";
       } finally {
         this.loading = false;
       }

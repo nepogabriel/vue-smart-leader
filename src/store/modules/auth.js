@@ -6,22 +6,18 @@ export default {
     token: localStorage.getItem('token') || null
   },
   getters: {
-    token: s => s.token,
-    isAuth: s => !!s.token
+    token: state => state.token,
+    isAuth: state => !!state.token
   },
   mutations: {
-    SET_TOKEN(s, t) {
-      s.token = t;
-      t ? localStorage.setItem('token', t) : localStorage.removeItem('token');
+    SET_TOKEN(state, token) {
+      state.token = token;
+      token ? localStorage.setItem('token', token) : localStorage.removeItem('token');
     }
   },
   actions: {
-    async login({ commit }, creds) {
-      const { data } = await api.post('/login', creds);
-      commit('SET_TOKEN', data.access_token);
-    },
     async logout({ commit }) {
-      await api.post('/logout');
+      // await api.post('/logout');
       commit('SET_TOKEN', null);
     }
   }
