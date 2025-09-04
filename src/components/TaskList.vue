@@ -83,6 +83,7 @@
 
 <script>
 import api from '@/services/api';
+import moment from 'moment';
 import TaskFilter from '@/components/TaskFilter.vue';
 import TaskPagination from '@/components/TaskPagination.vue';
 import TaskForm from '@/components/TaskForm.vue';
@@ -270,11 +271,9 @@ export default {
       }[priority] || priority;
     },
     formatDate(date) {
-      if (!date)
-        return '-';
-
-      const parsedDate = new Date(date);
-      return isNaN(parsedDate.getTime()) ? '-' : parsedDate.toLocaleDateString('pt-BR');
+      if (!date) return '-';
+  
+      return moment.utc(date).format('DD/MM/YYYY');
     },
   },
 };
