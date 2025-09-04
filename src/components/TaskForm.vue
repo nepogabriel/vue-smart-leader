@@ -9,10 +9,10 @@
           :class="{ 'is-invalid': errors.title }"
           id="title"
           v-model="form.title"
-          required
         />
         <div v-if="errors.title" class="invalid-feedback">{{ errors.title }}</div>
       </div>
+
       <div class="mb-3">
         <label for="description" class="form-label">Descrição</label>
         <textarea
@@ -23,6 +23,7 @@
         ></textarea>
         <div v-if="errors.description" class="invalid-feedback">{{ errors.description }}</div>
       </div>
+
       <div class="mb-3">
         <label for="status" class="form-label">Status</label>
         <select
@@ -30,13 +31,13 @@
           :class="{ 'is-invalid': errors.status }"
           id="status"
           v-model="form.status"
-          required
         >
           <option value="" disabled>Selecione o status</option>
           <option v-for="(label, value) in statusOptions" :key="value" :value="value">{{ label }}</option>
         </select>
         <div v-if="errors.status" class="invalid-feedback">{{ errors.status }}</div>
       </div>
+
       <div class="mb-3">
         <label for="priority" class="form-label">Prioridade</label>
         <select
@@ -44,13 +45,13 @@
           :class="{ 'is-invalid': errors.priority }"
           id="priority"
           v-model="form.priority"
-          required
         >
           <option value="" disabled>Selecione a prioridade</option>
           <option v-for="(label, value) in priorityOptions" :key="value" :value="value">{{ label }}</option>
         </select>
         <div v-if="errors.priority" class="invalid-feedback">{{ errors.priority }}</div>
       </div>
+
       <div class="mb-3">
         <label for="due_date" class="form-label">Data de Vencimento</label>
         <input
@@ -59,7 +60,6 @@
           :class="{ 'is-invalid': errors.due_date }"
           id="due_date"
           v-model="form.due_date"
-          required
         />
         <div v-if="errors.due_date" class="invalid-feedback">{{ errors.due_date }}</div>
       </div>
@@ -95,7 +95,7 @@ export default {
   },
   data() {
     return {
-      form: { ...this.task },
+      form: this.initializeForm(),
       errors: {
         title: '',
         description: '',
@@ -117,10 +117,22 @@ export default {
   },
   watch: {
     task(newTask) {
-      this.form = { ...newTask };
+      this.form = this.initializeForm(newTask);
     },
   },
   methods: {
+    initializeForm(task = this.task) {
+      const form = { ...task };
+
+      if (task.due_date) {
+        const date = new Date(task.due_date);
+        
+        if (!isNaN(date.getTime())) {
+          form.due_date = date.toISOString().split('T')[0];
+        }
+      }
+      return form;
+    },
     validateForm() {
       this.errors = {
         title: '',
@@ -133,6 +145,11 @@ export default {
 
       if (!this.form.title || this.form.title.trim() === '') {
         this.errors.title = 'O título é obrigatório.';
+        isValid = false;
+      }
+
+      if (!this.form.description || this.form.description.trim() === '') {
+        this.errors.description = 'A descrição é obrigatória.';
         isValid = false;
       }
 
@@ -164,7 +181,7 @@ export default {
       try {
         const payload = {
           title: this.form.title,
-          description: this.form.description || '',
+          description: this.form.description,
           status: this.form.status,
           priority: this.form.priority,
           due_date: this.form.due_date,
