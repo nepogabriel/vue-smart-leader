@@ -8,15 +8,27 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item" v-if="isAuth">
-                <span class="nav-link">{{ user?.name || '' }} | {{ user?.company || '' }}</span>
-              </li>
+            <ul class="navbar-nav">
               <li class="nav-item" v-if="isAuth">
                 <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
               </li>
-              <li class="nav-item" v-if="isAuth">
-                <a class="nav-link logout" @click="logout">Sair</a>
+            </ul>
+
+            <ul class="navbar-nav ms-auto" v-if="isAuth">
+              <li class="nav-item">
+                <span class="nav-link">
+                  <i class="fa fa-user" aria-hidden="true"></i> {{ user?.name || '' }}
+                </span>
+              </li>
+
+              <li class="nav-item">
+                <span class="nav-link">
+                   <i class="fa fa-building" aria-hidden="true"></i> {{ user?.company || '' }}
+                </span>
+              </li>
+
+              <li class="nav-item">
+                <span class="nav-link logout" @click="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Sair</span>
               </li>
             </ul>
           </div>
