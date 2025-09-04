@@ -44,31 +44,25 @@
       <div v-else-if="filteredTasks.length === 0" class="alert alert-info" role="alert">
         Nenhuma tarefa encontrada.
       </div>
-      <table v-else class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>Título</th>
-            <th>Descrição</th>
-            <th>Status</th>
-            <th>Prioridade</th>
-            <th>Data de Vencimento</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="task in filteredTasks" :key="task.id">
-            <td>{{ task.title }}</td>
-            <td>{{ task.description || '-' }}</td>
-            <td>{{ task.status | formatStatus }}</td>
-            <td>{{ task.priority | formatPriority }}</td>
-            <td>{{ task.due_date | formatDate }}</td>
-            <td>
+      <div v-else class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div v-for="task in filteredTasks" :key="task.id" class="col">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">{{ task.title }}</h5>
+              <p class="card-text text-muted">{{ task.description || '-' }}</p>
+              <div class="mb-2">
+                <span class="badge bg-secondary me-2">{{ task.status | formatStatus }}</span>
+                <span class="badge bg-secondary">{{ task.priority | formatPriority }}</span>
+              </div>
+              <p class="card-text"><small class="text-muted">Vencimento: {{ task.due_date | formatDate }}</small></p>
+            </div>
+            <div class="card-footer bg-transparent border-0 d-flex justify-content-end gap-2">
               <button class="btn btn-sm btn-success" @click="openEditForm(task)"><i class="fa fa-pencil-square-o"></i></button>
               <button class="btn btn-sm btn-danger" @click="openDeleteModal(task)"><i class="fa fa-trash-o"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </div>
+        </div>
+      </div>
       <TaskPagination
         :current-page="currentPage"
         :total-pages="totalPages"
@@ -282,10 +276,20 @@ export default {
 </script>
 
 <style scoped>
-.gap-3 {
-  gap: 1rem;
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
 }
-.me-2 {
-  margin-right: 0.5rem;
+.card-text {
+  margin-bottom: 0.75rem;
+}
+.badge {
+  font-size: 0.9rem;
+}
+.card-footer {
+  padding: 0.75rem;
+}
+.gap-2 {
+  gap: 0.5rem;
 }
 </style>
