@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown">
+  <div class="dropdown col-sm-6 mb-2">
     <button
       class="btn btn-success dropdown-toggle"
       type="button"

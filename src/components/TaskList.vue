@@ -10,23 +10,25 @@
       />
     </div>
     <div v-else>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Lista de Tarefas</h2>
-        <div class="d-flex gap-3 align-items-center">
-          <TaskFilter
-            filter-id="statusFilter"
-            :initial-value="selectedStatus"
-            :labels="statusLabels"
-            default-label="Todos os Status"
-            @update:value="setStatus"
-          />
-          <TaskFilter
-            filter-id="priorityFilter"
-            :initial-value="selectedPriority"
-            :labels="priorityLabels"
-            default-label="Todas as Prioridades"
-            @update:value="setPriority"
-          />
+      <div class="mb-4">
+        <h2 class="text-center mb-5">Lista de Tarefas</h2>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="row">
+            <TaskFilter
+              filter-id="statusFilter"
+              :initial-value="selectedStatus"
+              :labels="statusLabels"
+              default-label="Todos os Status"
+              @update:value="setStatus"
+            />
+            <TaskFilter
+              filter-id="priorityFilter"
+              :initial-value="selectedPriority"
+              :labels="priorityLabels"
+              default-label="Todas as Prioridades"
+              @update:value="setPriority"
+            />
+          </div>
           <button class="btn btn-success" @click="openCreateForm"><i class="fa fa-plus"></i> Nova Tarefa</button>
         </div>
       </div>
