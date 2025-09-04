@@ -75,6 +75,7 @@ export default {
         });
 
         this.$store.commit("auth/SET_TOKEN", data.data.access_token);
+        await this.$store.dispatch("auth/fetchUser");
 
         this.$router.push({ name: "dashboard" }).catch(() => {});
       } catch (e) {
