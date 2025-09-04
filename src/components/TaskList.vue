@@ -2,30 +2,21 @@
   <div>
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Lista de Tarefas</h2>
-      <div class="dropdown">
-        <button
-          class="btn btn-secondary dropdown-toggle"
-          type="button"
-          id="statusFilter"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <i class="fa fa-filter"></i> {{ selectedStatus ? statusLabels[selectedStatus] : 'Todos os Status' }}
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="statusFilter">
-          <li>
-            <a class="dropdown-item" href="#" @click.prevent="setStatus('')">Todos</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#" @click.prevent="setStatus('pending')">Pendente</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#" @click.prevent="setStatus('in_progress')">Em Andamento</a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#" @click.prevent="setStatus('done')">Concluída</a>
-          </li>
-        </ul>
+      <div class="d-flex gap-3">
+        <TaskFilters
+          filter-id="statusFilter"
+          :initial-value="selectedStatus"
+          :labels="statusLabels"
+          default-label="Todos os Status"
+          @update:value="setStatus"
+        />
+        <TaskFilters
+          filter-id="priorityFilter"
+          :initial-value="selectedPriority"
+          :labels="priorityLabels"
+          default-label="Todas as Prioridades"
+          @update:value="setPriority"
+        />
       </div>
     </div>
     <div v-if="loading" class="text-center">
@@ -52,7 +43,7 @@
       <tbody>
         <tr v-for="task in filteredTasks" :key="task.id">
           <td>{{ task.title }}</td>
-          <td>{{ task.description }}</td>
+          <td>{{ task.description || '-' }}</td>
           <td>{{ task.status | formatStatus }}</td>
           <td>{{ task.priority | formatPriority }}</td>
           <td>{{ task.due_date | formatDate }}</td>
@@ -64,26 +55,52 @@
 
 <script>
 import api from '@/services/api';
+import TaskFilters from '@/components/TaskFilter.vue';
 
 export default {
   name: 'TaskList',
+  components: {
+    TaskFilters,
+  },
   data() {
     return {
       tasks: [],
       loading: false,
       error: null,
       selectedStatus: '',
+      selectedPriority: '',
+      validStatuses: [
+        'pending',
+        'in_progress',
+        'done'
+      ],
+      validPriorities: [
+        'low',
+        'medium',
+        'high'
+      ],
       statusLabels: {
         pending: 'Pendente',
         in_progress: 'Em Andamento',
-        completed: 'Concluída',
+        done: 'Concluída',
+      },
+      priorityLabels: {
+        low: 'Baixa',
+        medium: 'Média',
+        high: 'Alta',
       },
     };
   },
   computed: {
     filteredTasks() {
-      if (!this.selectedStatus) return this.tasks;
-      return this.tasks.filter(task => task.status === this.selectedStatus);
+      let tasks = this.tasks;
+      if (this.selectedStatus) {
+        tasks = tasks.filter(task => task.status === this.selectedStatus);
+      }
+      if (this.selectedPriority) {
+        tasks = tasks.filter(task => task.priority === this.selectedPriority);
+      }
+      return tasks;
     },
   },
   created() {
@@ -94,9 +111,12 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const { data } = await api.get('/tasks', {
-          params: { status: this.selectedStatus || undefined },
-        });
+        const { data } = await api.get('/tasks');
+
+        if (!Array.isArray(data.data)) {
+          throw new Error('Resposta inválida: dados não são uma lista.');
+        }
+
         this.tasks = data.data;
       } catch (e) {
         this.error = e?.response?.data?.message || 'Erro ao carregar tarefas.';
@@ -106,7 +126,9 @@ export default {
     },
     setStatus(status) {
       this.selectedStatus = status;
-      this.fetchTasks();
+    },
+    setPriority(priority) {
+      this.selectedPriority = priority;
     },
   },
   filters: {
@@ -125,8 +147,11 @@ export default {
       }[priority] || priority;
     },
     formatDate(date) {
-      if (!date) return '-';
-      return new Date(date).toLocaleDateString('pt-BR');
+      if (!date)
+        return '-';
+
+      const parsedDate = new Date(date);
+      return isNaN(parsedDate.getTime()) ? '-' : parsedDate.toLocaleDateString('pt-BR');
     },
   },
 };
