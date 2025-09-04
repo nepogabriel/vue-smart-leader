@@ -27,11 +27,14 @@
         </div>
         <button
           type="submit"
-          class="btn btn-success w-100"
+          class="btn btn-success w-100 mb-2"
           :disabled="loading || !isFormValid"
         >
           <i class="fa fa-sign-in"></i> {{ loading ? 'Entrando...' : 'Entrar' }}
         </button>
+
+        <router-link class="btn btn-dark w-100" to="/cadastrar">Cadastrar</router-link>
+
         <p v-if="error" class="text-danger text-center mt-3">{{ error }}</p>
       </form>
     </div>
