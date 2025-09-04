@@ -37,10 +37,8 @@ export default {
           password: this.password,
         });
 
-        // salva o token no Vuex
         this.$store.commit("auth/SET_TOKEN", data.data.access_token);
 
-        // redireciona para dashboard
         this.$router.push({ name: "dashboard" }).catch(() => {});
       } catch (e) {
         console.error("Erro no login:", e);

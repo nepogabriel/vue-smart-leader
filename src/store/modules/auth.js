@@ -1,9 +1,9 @@
-import api from '@/services/api';
+import Cookies from "js-cookie";
 
 export default {
   namespaced: true,
   state: {
-    token: localStorage.getItem('token') || null
+    token: Cookies.get('token') || null
   },
   getters: {
     token: state => state.token,
@@ -12,7 +12,11 @@ export default {
   mutations: {
     SET_TOKEN(state, token) {
       state.token = token;
-      token ? localStorage.setItem('token', token) : localStorage.removeItem('token');
+      if (token) {
+        Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
+      } else {
+        Cookies.remove('token');
+      }
     }
   },
   actions: {
