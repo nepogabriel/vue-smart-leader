@@ -9,7 +9,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item" v-if="isAuth">
-              <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
+              <router-link class="nav-link" to="/">Dashboard</router-link>
             </li>
           </ul>
           <ul class="navbar-nav ms-auto" v-if="isAuth">
