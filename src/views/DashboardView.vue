@@ -1,17 +1,17 @@
 <template>
   <div>
     <h1>Dashboard</h1>
+    <TaskList />
   </div>
 </template>
 
 <script>
+import TaskList from '@/components/TaskList.vue';
+
 export default {
   name: 'Dashboard',
-  computed: {
-
-  },
-  methods: {
-
+  components: {
+    TaskList,
   },
 };
 </script>
