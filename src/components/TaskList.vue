@@ -178,6 +178,11 @@ export default {
       } catch (e) {
         this.error = e?.response?.data?.message || 'Erro ao carregar tarefas.';
         console.error('Erro na requisição:', e);
+
+        if (e.response?.status === 401) {
+          this.$router.push({ name: "login" }).catch(() => {});
+        }
+
       } finally {
         this.loading = false;
       }
