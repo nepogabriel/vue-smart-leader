@@ -61,7 +61,7 @@
             <td>{{ task.priority | formatPriority }}</td>
             <td>{{ task.due_date | formatDate }}</td>
             <td>
-              <button class="btn btn-sm btn-success" @click="openEditForm(task)">Editar</button>
+              <button class="btn btn-sm btn-success" @click="openEditForm(task)"><i class="fa fa-pencil-square-o"></i></button>
             </td>
           </tr>
         </tbody>
